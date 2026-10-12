@@ -290,6 +290,31 @@ function createCenteredPositions(count) {
   return { positions, rows };
 }
 
+function createRandomPositions(count) {
+  const worldWidth = pingWorld.clientWidth || WORLD_WIDTH;
+  const minX = 16;
+  const maxX = worldWidth - PING_WIDTH - 16;
+  const minY = WORLD_TOP;
+  const maxY = WORLD_HEIGHT - WORLD_BOTTOM_SAFE - PING_HEIGHT;
+  const positions = [];
+
+  for (let index = 0; index < count; index += 1) {
+    let candidate = null;
+    for (let attempt = 0; attempt < 80; attempt += 1) {
+      const x = minX + Math.random() * (maxX - minX);
+      const y = minY + Math.random() * (maxY - minY);
+      candidate = [x, y];
+      const hasRoom = positions.every(([placedX, placedY]) =>
+        Math.abs(x - placedX) > PING_WIDTH + 12 || Math.abs(y - placedY) > PING_HEIGHT + 12,
+      );
+      if (hasRoom) break;
+    }
+    positions.push(candidate);
+  }
+
+  return positions;
+}
+
 function chooseWanderTarget(actor) {
   const worldWidth = pingWorld.clientWidth || DESIGN_WIDTH;
   const minX = 24;
@@ -315,7 +340,7 @@ function renderPingWorld() {
   lastXpPaintTime = 0;
 
   const ownedPings = PINGS.slice(0, ownedPingCount);
-  const layout = createCenteredPositions(ownedPings.length);
+  const positions = createRandomPositions(ownedPings.length);
   activeWorldHeight = WORLD_HEIGHT;
   pingWorld.style.width = `${WORLD_WIDTH}px`;
   pingWorld.style.height = `${activeWorldHeight}px`;
@@ -354,7 +379,7 @@ function renderPingWorld() {
   `;
 
   pingActors = ownedPings.map((data, index) => {
-    const [x, y] = layout.positions[index];
+    const [x, y] = positions[index];
     const direction = index % 2 === 0 ? 1 : -1;
     const actor = {
       index,
