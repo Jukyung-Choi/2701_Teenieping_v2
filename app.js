@@ -116,6 +116,7 @@ function finishWorldPan(event) {
 
 worldScroll.addEventListener("pointerup", finishWorldPan);
 worldScroll.addEventListener("pointercancel", finishWorldPan);
+worldScroll.addEventListener("wheel", (event) => event.preventDefault(), { passive: false });
 
 document.addEventListener("click", (event) => {
   if (!suppressPingClick || !event.target.closest("[data-ping]")) return;
