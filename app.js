@@ -153,17 +153,9 @@ function updateRankSummary() {
   );
 }
 
-function saturationForXp(xp) {
-  return xp > 30
-    ? 100
-    : Math.round(55 * Math.pow(xp / 30, 2.6));
-}
-
 function updatePingElement(actor) {
   const roundedXp = Math.round(actor.data.xp);
-  const saturation = saturationForXp(actor.data.xp);
   actor.element.style.setProperty("--xp", `${actor.data.xp.toFixed(2)}%`);
-  actor.element.style.setProperty("--ping-saturation", `${saturation}%`);
   actor.element.classList.toggle("is-full", actor.data.xp >= 99.5);
   actor.element.classList.toggle("is-low-xp", actor.data.xp <= 30);
   actor.element.setAttribute("aria-label", `${actor.data.name} XP ${roundedXp}%. 터치해서 100%로 회복하기`);
