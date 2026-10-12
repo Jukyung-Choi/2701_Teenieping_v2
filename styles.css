@@ -453,9 +453,9 @@ button:focus-visible {
   0% { transform: scale(1); }
   16% { transform: scale(1.16, 1.13); }
   30% { transform: scale(0.94, 0.97); }
-  46% { transform: scale(1.08, 1.06); }
-  61% { transform: scale(0.97, 0.98); }
-  76% { transform: scale(1.025, 1.02); }
+  41% { transform: scale(1.08, 1.06); }
+  50% { transform: scale(0.97, 0.98); }
+  64% { transform: scale(1.025, 1.02); }
   100% { transform: scale(1); }
 }
 
