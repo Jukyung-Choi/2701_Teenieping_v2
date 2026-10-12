@@ -1,5 +1,6 @@
 const DESIGN_WIDTH = 390;
 const DESIGN_HEIGHT = 844;
+const WORLD_WIDTH = DESIGN_WIDTH * 3;
 
 const screenViewport = document.querySelector("#screenViewport");
 const gameScreen = document.querySelector("#gameScreen");
@@ -192,10 +193,10 @@ function createCenteredPositions(count) {
   const centerLeft = (worldWidth - PING_WIDTH) / 2;
   const spacing = isDenseLayout
     ? Math.min(
-      denseColumns === 5 ? 64 : 82,
-      (worldWidth - 40 - PING_WIDTH) / Math.max(1, denseColumns - 1),
+      denseColumns === 5 ? 190 : 220,
+      (worldWidth - 120 - PING_WIDTH) / Math.max(1, denseColumns - 1),
     )
-    : Math.min(112, Math.max(PING_WIDTH + 10, (worldWidth - sidePadding * 2 - PING_WIDTH) / 2));
+    : Math.min(300, Math.max(PING_WIDTH + 10, (worldWidth - sidePadding * 2 - PING_WIDTH) / Math.max(1, maxPerRow - 1)));
   const rows = Math.ceil(count / maxPerRow);
   const denseTop = WORLD_TOP + 18;
   const denseBottom = count >= 20 ? 800 : 1180 - WORLD_BOTTOM_SAFE - PING_HEIGHT;
@@ -240,8 +241,8 @@ function chooseWanderTarget(actor) {
   const angle = directionIndex * (Math.PI / 4) + (Math.random() - 0.5) * 0.18;
   const distance = 95 + Math.random() * 85;
 
-  actor.targetX = Math.max(minX, Math.min(maxX, actor.homeX + Math.cos(angle) * distance));
-  actor.targetY = Math.max(minY, Math.min(maxY, actor.homeY + Math.sin(angle) * distance));
+  actor.targetX = Math.max(minX, Math.min(maxX, actor.x + Math.cos(angle) * distance));
+  actor.targetY = Math.max(minY, Math.min(maxY, actor.y + Math.sin(angle) * distance));
   actor.element.dataset.swimDirection = directions[directionIndex];
   actor.targetStep += 1;
   actor.targetTimer = 2400 + Math.random() * 3000;
@@ -256,6 +257,7 @@ function renderPingWorld() {
   const ownedPings = PINGS.slice(0, ownedPingCount);
   const layout = createCenteredPositions(ownedPings.length);
   activeWorldHeight = 1180;
+  pingWorld.style.width = `${WORLD_WIDTH}px`;
   pingWorld.style.height = `${activeWorldHeight}px`;
   collisionCount = 0;
   collisionCooldowns.clear();
@@ -300,8 +302,6 @@ function renderPingWorld() {
       element: pingWorld.querySelector(`[data-ping="${data.id}"]`),
       x,
       y,
-      homeX: x,
-      homeY: y,
       targetX: x,
       targetY: y,
       targetStep: 0,
@@ -413,7 +413,8 @@ function resolvePingCollisions() {
 
 function keepActorInWorld(actor) {
   const minX = 16;
-  const maxX = DESIGN_WIDTH - PING_WIDTH - 16;
+  const worldWidth = pingWorld.clientWidth || WORLD_WIDTH;
+  const maxX = worldWidth - PING_WIDTH - 16;
   const minY = WORLD_TOP;
   const maxY = activeWorldHeight - WORLD_BOTTOM_SAFE - PING_HEIGHT;
 
@@ -842,6 +843,7 @@ function resetDemoPanel() {
   ownedPingCount = DEFAULT_OWNED_PING_COUNT;
   showRankSummary = true;
   PINGS.forEach((ping) => { ping.xp = 100; });
+  worldScroll.scrollLeft = (WORLD_WIDTH - worldScroll.clientWidth) / 2;
   worldScroll.scrollTop = 0;
   renderPingWorld();
   updateRankSummary();
@@ -1031,5 +1033,6 @@ document.addEventListener("visibilitychange", () => {
 });
 
 renderPingWorld();
+worldScroll.scrollLeft = (WORLD_WIDTH - worldScroll.clientWidth) / 2;
 updateRankSummary();
 resizeScreen();
