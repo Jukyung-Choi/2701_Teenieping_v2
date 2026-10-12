@@ -1,6 +1,8 @@
 const DESIGN_WIDTH = 390;
 const DESIGN_HEIGHT = 844;
 const WORLD_WIDTH = DESIGN_WIDTH * 3;
+const WORLD_HEIGHT = DESIGN_HEIGHT * 2;
+const WORLD_CENTER_Y = (WORLD_HEIGHT - DESIGN_HEIGHT) / 2;
 
 const screenViewport = document.querySelector("#screenViewport");
 const gameScreen = document.querySelector("#gameScreen");
@@ -40,7 +42,7 @@ const CRUISE_MAX_SPEED = 0.0415;
 const COLLISION_MAX_SPEED = 0.06;
 const PLAYER_RANKING_SCORE = 2184600;
 const PLAYER_RANK = 518;
-let activeWorldHeight = 1180;
+let activeWorldHeight = WORLD_HEIGHT;
 
 const BASE_PINGS = [
   { id: "hachuping", name: "하츄핑", image: "assets/teeniepings/hachuping.png", color: "#ff4abd", xp: 100, artW: 69.091, artH: 68.283, eyeL: [36, 48, 20, 18], eyeR: [65, 48, 20, 18], lid: "#f3d3e3" },
@@ -254,8 +256,10 @@ function createCenteredPositions(count) {
     )
     : Math.min(300, Math.max(PING_WIDTH + 10, (worldWidth - sidePadding * 2 - PING_WIDTH) / Math.max(1, maxPerRow - 1)));
   const rows = Math.ceil(count / maxPerRow);
-  const denseTop = WORLD_TOP + 18;
-  const denseBottom = count >= 20 ? 800 : 1180 - WORLD_BOTTOM_SAFE - PING_HEIGHT;
+  const denseTop = WORLD_TOP + 18 + WORLD_CENTER_Y;
+  const denseBottom = count >= 20
+    ? 800 + WORLD_CENTER_Y
+    : WORLD_HEIGHT - WORLD_BOTTOM_SAFE - PING_HEIGHT;
   const denseRowGap = rows > 1 ? (denseBottom - denseTop) / (rows - 1) : 0;
   const positions = [];
 
@@ -263,7 +267,7 @@ function createCenteredPositions(count) {
     const rowCount = Math.min(maxPerRow, count - positions.length);
     const y = isDenseLayout
       ? denseTop + row * denseRowGap
-      : WORLD_TOP + 36 + row * ROW_GAP;
+      : WORLD_TOP + 36 + WORLD_CENTER_Y + row * ROW_GAP;
     const offsets = isDenseLayout
       ? Array.from({ length: rowCount }, (_, index) => index - (rowCount - 1) / 2)
       : centerOutOffsets(rowCount);
@@ -312,7 +316,7 @@ function renderPingWorld() {
 
   const ownedPings = PINGS.slice(0, ownedPingCount);
   const layout = createCenteredPositions(ownedPings.length);
-  activeWorldHeight = 1180;
+  activeWorldHeight = WORLD_HEIGHT;
   pingWorld.style.width = `${WORLD_WIDTH}px`;
   pingWorld.style.height = `${activeWorldHeight}px`;
   collisionCount = 0;
@@ -900,7 +904,7 @@ function resetDemoPanel() {
   showRankSummary = true;
   PINGS.forEach((ping) => { ping.xp = 100; });
   worldScroll.scrollLeft = (WORLD_WIDTH - worldScroll.clientWidth) / 2;
-  worldScroll.scrollTop = 0;
+  worldScroll.scrollTop = (WORLD_HEIGHT - worldScroll.clientHeight) / 2;
   renderPingWorld();
   updateRankSummary();
   syncDemoPanel();
@@ -1090,5 +1094,6 @@ document.addEventListener("visibilitychange", () => {
 
 renderPingWorld();
 worldScroll.scrollLeft = (WORLD_WIDTH - worldScroll.clientWidth) / 2;
+worldScroll.scrollTop = (WORLD_HEIGHT - worldScroll.clientHeight) / 2;
 updateRankSummary();
 resizeScreen();
