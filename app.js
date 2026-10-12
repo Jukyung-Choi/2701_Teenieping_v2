@@ -31,8 +31,8 @@ const demoRankVisibility = document.querySelector("#demoRankVisibility");
 
 const PING_WIDTH = 94;
 const PING_HEIGHT = 126;
-const COLLISION_WIDTH = 48;
-const COLLISION_HEIGHT = 68;
+const COLLISION_WIDTH = 56;
+const COLLISION_HEIGHT = 76;
 const WORLD_TOP = 154;
 const WORLD_BOTTOM_SAFE = 150;
 const ROW_GAP = 220;
@@ -395,8 +395,8 @@ function positionActor(actor) {
 }
 
 function resolvePingCollisions() {
-  const collisionWidth = ownedPingCount > 10 ? 42 : COLLISION_WIDTH;
-  const collisionHeight = ownedPingCount > 10 ? 60 : COLLISION_HEIGHT;
+  const collisionWidth = ownedPingCount > 10 ? 50 : COLLISION_WIDTH;
+  const collisionHeight = ownedPingCount > 10 ? 68 : COLLISION_HEIGHT;
   for (let i = 0; i < pingActors.length; i += 1) {
     for (let j = i + 1; j < pingActors.length; j += 1) {
       const a = pingActors[i];
