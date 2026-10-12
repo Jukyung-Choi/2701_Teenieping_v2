@@ -69,6 +69,61 @@ const PINGS = Array.from({ length: MAX_DEMO_PINGS }, (_, index) => {
 
 let pingActors = [];
 let animationFrame = 0;
+let worldPan = null;
+let suppressPingClick = false;
+
+worldScroll.addEventListener("pointerdown", (event) => {
+  if (event.pointerType !== "mouse" || event.button !== 0) return;
+  worldPan = {
+    pointerId: event.pointerId,
+    startX: event.clientX,
+    startY: event.clientY,
+    startScrollLeft: worldScroll.scrollLeft,
+    startScrollTop: worldScroll.scrollTop,
+    moved: false,
+  };
+});
+
+worldScroll.addEventListener("pointermove", (event) => {
+  if (!worldPan || event.pointerId !== worldPan.pointerId) return;
+  const deltaX = event.clientX - worldPan.startX;
+  const deltaY = event.clientY - worldPan.startY;
+  if (!worldPan.moved && Math.hypot(deltaX, deltaY) < 5) return;
+
+  if (!worldPan.moved) {
+    worldPan.moved = true;
+    worldScroll.classList.add("is-panning");
+    worldScroll.setPointerCapture(event.pointerId);
+  }
+
+  event.preventDefault();
+  worldScroll.scrollLeft = worldPan.startScrollLeft - deltaX;
+  worldScroll.scrollTop = worldPan.startScrollTop - deltaY;
+});
+
+function finishWorldPan(event) {
+  if (!worldPan || event.pointerId !== worldPan.pointerId) return;
+  if (worldPan.moved) {
+    suppressPingClick = true;
+    window.setTimeout(() => { suppressPingClick = false; }, 0);
+    if (worldScroll.hasPointerCapture(event.pointerId)) {
+      worldScroll.releasePointerCapture(event.pointerId);
+    }
+    worldScroll.classList.remove("is-panning");
+  }
+  worldPan = null;
+}
+
+worldScroll.addEventListener("pointerup", finishWorldPan);
+worldScroll.addEventListener("pointercancel", finishWorldPan);
+
+document.addEventListener("click", (event) => {
+  if (!suppressPingClick || !event.target.closest("[data-ping]")) return;
+  suppressPingClick = false;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+}, true);
+
 let lastAnimationTime = 0;
 let lastXpPaintTime = 0;
 let collisionCount = 0;

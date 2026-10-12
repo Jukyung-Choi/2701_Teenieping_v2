@@ -162,6 +162,13 @@ button:focus-visible {
   scrollbar-width: none;
   touch-action: pan-x pan-y pinch-zoom;
   -webkit-overflow-scrolling: touch;
+  cursor: grab;
+}
+
+.world-scroll.is-panning,
+.world-scroll.is-panning * {
+  cursor: grabbing !important;
+  user-select: none;
 }
 
 .world-scroll::-webkit-scrollbar {
