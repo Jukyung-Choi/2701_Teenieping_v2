@@ -186,7 +186,6 @@ let activeRankingTab = "ranking";
 let showRankSummary = true;
 let primaryHandler = closeSheet;
 let toastTimer;
-let rewardCoachmarkEarned = false;
 let rewardCoachmarkDismissed = false;
 const followed = new Set();
 const claimedRewards = new Set();
@@ -198,15 +197,13 @@ function updateSoulFromPings() {
   const maxPingXp = ownedPings.length * 100;
   soul = maxPingXp ? Math.round((totalPingXp / maxPingXp) * 100) : 0;
   gaugeFill.style.width = `${soul}%`;
-  gaugeValue.textContent = `${soul}/100`;
-  document.querySelector(".soul-card").setAttribute("aria-label", `나의 소울 게이지 ${soul}점, 100점 만점`);
+  gaugeValue.textContent = String(soul);
+  document.querySelector(".soul-card").setAttribute("aria-label", `나의 소울 게이지 ${soul}점`);
   const hasUnclaimedReward = MILESTONES.some((item) => soulXp() >= item.need && !claimedRewards.has(item.level));
-  if (soul === 100 && hasUnclaimedReward) rewardCoachmarkEarned = true;
   if (!hasUnclaimedReward) {
-    rewardCoachmarkEarned = false;
     rewardCoachmarkDismissed = false;
   }
-  rewardCoachmark.hidden = !(rewardCoachmarkEarned && hasUnclaimedReward && !rewardCoachmarkDismissed);
+  rewardCoachmark.hidden = !(hasUnclaimedReward && !rewardCoachmarkDismissed);
   if (!demoLayer.hidden) syncDemoPanel();
 }
 
