@@ -31,8 +31,8 @@ const demoRankVisibility = document.querySelector("#demoRankVisibility");
 
 const PING_WIDTH = 94;
 const PING_HEIGHT = 126;
-const COLLISION_WIDTH = 56;
-const COLLISION_HEIGHT = 76;
+const COLLISION_WIDTH = 62;
+const COLLISION_HEIGHT = 82;
 const WORLD_TOP = 154;
 const WORLD_BOTTOM_SAFE = 150;
 const ROW_GAP = 220;
@@ -356,7 +356,7 @@ function renderPingWorld() {
       class="teenieping"
       type="button"
       data-ping="${ping.id}"
-      style="--ping-color:${ping.color};--ping-image:url('${ping.image}');--xp:${ping.xp}%;--ping-saturation:100%;--art-w:${ping.artW * 1.06}px;--art-h:${ping.artH * 1.06}px;--bob-delay:${-index * 0.31}s;--bob-duration:${2.35 + (index % 4) * 0.24}s;--bob-distance:${3.2 + (index % 3) * 0.55}px;--hop-delay:${-index * 0.83}s;--hop-duration:${5.2 + (index % 5) * 0.38}s;--eye-lx:${ping.eyeL[0]}%;--eye-ly:${ping.eyeL[1]}%;--eye-lw:${ping.eyeL[2]}%;--eye-lh:${ping.eyeL[3]}%;--eye-rx:${ping.eyeR[0]}%;--eye-ry:${ping.eyeR[1]}%;--eye-rw:${ping.eyeR[2]}%;--eye-rh:${ping.eyeR[3]}%;--lid-color:${ping.lid};--blink-delay:${-index * 0.47}s;--blink-duration:${3.8 + (index % 5) * 0.43}s"
+      style="--ping-color:${ping.color};--ping-image:url('${ping.image}');--xp:${ping.xp}%;--ping-saturation:100%;--art-w:${ping.artW * 1.10}px;--art-h:${ping.artH * 1.10}px;--bob-delay:${-index * 0.31}s;--bob-duration:${2.35 + (index % 4) * 0.24}s;--bob-distance:${3.2 + (index % 3) * 0.55}px;--hop-delay:${-index * 0.83}s;--hop-duration:${5.2 + (index % 5) * 0.38}s;--eye-lx:${ping.eyeL[0]}%;--eye-ly:${ping.eyeL[1]}%;--eye-lw:${ping.eyeL[2]}%;--eye-lh:${ping.eyeL[3]}%;--eye-rx:${ping.eyeR[0]}%;--eye-ry:${ping.eyeR[1]}%;--eye-rw:${ping.eyeR[2]}%;--eye-rh:${ping.eyeR[3]}%;--lid-color:${ping.lid};--blink-delay:${-index * 0.47}s;--blink-duration:${3.8 + (index % 5) * 0.43}s"
       aria-label="${ping.name} XP ${ping.xp}%. 터치해서 100%로 회복하기"
     >
       <span class="ping-visual">
@@ -424,8 +424,8 @@ function positionActor(actor) {
 }
 
 function resolvePingCollisions() {
-  const collisionWidth = ownedPingCount > 10 ? 50 : COLLISION_WIDTH;
-  const collisionHeight = ownedPingCount > 10 ? 68 : COLLISION_HEIGHT;
+  const collisionWidth = ownedPingCount > 10 ? 56 : COLLISION_WIDTH;
+  const collisionHeight = ownedPingCount > 10 ? 76 : COLLISION_HEIGHT;
   for (let i = 0; i < pingActors.length; i += 1) {
     for (let j = i + 1; j < pingActors.length; j += 1) {
       const a = pingActors[i];
