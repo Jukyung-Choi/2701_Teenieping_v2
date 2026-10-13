@@ -14,6 +14,7 @@ const sheetContent = document.querySelector("#sheetContent");
 const sheetPrimary = document.querySelector("#sheetPrimary");
 const gaugeFill = document.querySelector("#gaugeFill");
 const gaugeValue = document.querySelector("#gaugeValue");
+const rewardCoachmark = document.querySelector("#rewardCoachmark");
 const toast = document.querySelector("#toast");
 const pingWorld = document.querySelector("#pingWorld");
 const worldScroll = document.querySelector("#worldScroll");
@@ -185,7 +186,8 @@ let activeRankingTab = "ranking";
 let showRankSummary = true;
 let primaryHandler = closeSheet;
 let toastTimer;
-let chargeWaveTimer;
+let rewardCoachmarkEarned = false;
+let rewardCoachmarkDismissed = false;
 const followed = new Set();
 const claimedRewards = new Set();
 const collisionCooldowns = new Map();
@@ -198,6 +200,13 @@ function updateSoulFromPings() {
   gaugeFill.style.width = `${soul}%`;
   gaugeValue.textContent = `${soul}/100`;
   document.querySelector(".soul-card").setAttribute("aria-label", `나의 소울 게이지 ${soul}점, 100점 만점`);
+  const hasUnclaimedReward = MILESTONES.some((item) => soulXp() >= item.need && !claimedRewards.has(item.level));
+  if (soul === 100 && hasUnclaimedReward) rewardCoachmarkEarned = true;
+  if (!hasUnclaimedReward) {
+    rewardCoachmarkEarned = false;
+    rewardCoachmarkDismissed = false;
+  }
+  rewardCoachmark.hidden = !(rewardCoachmarkEarned && hasUnclaimedReward && !rewardCoachmarkDismissed);
   if (!demoLayer.hidden) syncDemoPanel();
 }
 
@@ -402,6 +411,7 @@ function renderPingWorld() {
       bounceAmplitude: 5 + (index % 3) * 1.2,
       collisionBoost: 0,
       pulseTimer: 0,
+      chargeWaveTimer: 0,
     };
     chooseWanderTarget(actor);
     return actor;
@@ -597,6 +607,7 @@ function feedPing(id) {
   actor.element.classList.remove("is-fed");
   requestAnimationFrame(() => actor.element.classList.add("is-fed"));
   actor.pulseTimer = setTimeout(() => actor.element.classList.remove("is-fed"), 760);
+  if (before < 100) playPingChargeWave(actor);
 }
 
 function resizeScreen() {
@@ -831,6 +842,11 @@ function openSheet(type) {
   }[type];
   if (!meta) return;
 
+  if (type === "soul") {
+    rewardCoachmarkDismissed = true;
+    rewardCoachmark.hidden = true;
+  }
+
   activeSheet = type;
   if (type === "ranking") activeRankingTab = "ranking";
   sheetEmoji.textContent = meta[0];
@@ -895,9 +911,11 @@ function syncDemoPanel() {
 
 function setAllPingXp(value) {
   const nextXp = clampDemoValue(value, 0, 100);
+  const newlyFullActors = nextXp === 100 ? pingActors.filter((actor) => actor.data.xp < 100) : [];
   PINGS.forEach((ping) => { ping.xp = nextXp; });
   pingActors.forEach(updatePingElement);
   updateSoulFromPings();
+  newlyFullActors.forEach(playPingChargeWave);
   syncDemoPanel();
 }
 
@@ -955,20 +973,19 @@ function bridgeAction(type) {
   }
 }
 
-function playChargeWave() {
-  clearTimeout(chargeWaveTimer);
-
-  pingActors.forEach((actor) => {
-    actor.element.classList.remove("is-charge-wave");
-  });
-
+function playPingChargeWave(actor) {
+  clearTimeout(actor.chargeWaveTimer);
+  actor.element.classList.remove("is-charge-wave");
   requestAnimationFrame(() => {
-    pingActors.forEach((actor) => actor.element.classList.add("is-charge-wave"));
+    actor.element.classList.add("is-charge-wave");
   });
-
-  chargeWaveTimer = setTimeout(() => {
-    pingActors.forEach((actor) => actor.element.classList.remove("is-charge-wave"));
+  actor.chargeWaveTimer = setTimeout(() => {
+    actor.element.classList.remove("is-charge-wave");
   }, 500);
+}
+
+function playChargeWave() {
+  pingActors.forEach(playPingChargeWave);
 }
 
 function chargeAll() {
