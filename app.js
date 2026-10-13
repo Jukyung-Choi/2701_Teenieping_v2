@@ -194,9 +194,9 @@ const collisionCooldowns = new Map();
 
 function updateSoulFromPings() {
   const ownedPings = PINGS.slice(0, ownedPingCount);
-  soul = ownedPings.length
-    ? Math.round(ownedPings.reduce((total, ping) => total + ping.xp, 0) / ownedPings.length)
-    : 0;
+  const totalPingXp = ownedPings.reduce((total, ping) => total + ping.xp, 0);
+  const maxPingXp = ownedPings.length * 100;
+  soul = maxPingXp ? Math.round((totalPingXp / maxPingXp) * 100) : 0;
   gaugeFill.style.width = `${soul}%`;
   gaugeValue.textContent = `${soul}/100`;
   document.querySelector(".soul-card").setAttribute("aria-label", `나의 소울 게이지 ${soul}점, 100점 만점`);
@@ -380,7 +380,7 @@ function renderPingWorld() {
             <span class="blink-eye blink-eye-right" aria-hidden="true"></span>
           </span>
         </span>
-        <span class="ping-xp-pop" aria-hidden="true">+XP</span>
+        <span class="ping-xp-pop" aria-hidden="true">+10%</span>
       </span>
     </button>
   `).join("") : `
@@ -592,8 +592,9 @@ function feedPing(id) {
   if (!actor) return;
 
   const before = actor.data.xp;
-  actor.data.xp = 100;
-  if (before <= 30) {
+  const gainedXp = Math.min(10, 100 - before);
+  actor.data.xp += gainedXp;
+  if (before <= 30 && gainedXp > 0) {
     actor.targetTimer = 0;
     chooseWanderTarget(actor);
   }
@@ -606,6 +607,7 @@ function feedPing(id) {
   actor.element.classList.remove("is-fed");
   requestAnimationFrame(() => actor.element.classList.add("is-fed"));
   actor.pulseTimer = setTimeout(() => actor.element.classList.remove("is-fed"), 760);
+  actor.element.querySelector(".ping-xp-pop").textContent = gainedXp > 0 ? `+${Math.round(gainedXp)}%` : "MAX";
 }
 
 function resizeScreen() {
