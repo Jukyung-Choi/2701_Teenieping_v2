@@ -46,16 +46,16 @@ const PLAYER_RANK = 518;
 let activeWorldHeight = WORLD_HEIGHT;
 
 const BASE_PINGS = [
-  { id: "hachuping", name: "하츄핑", image: "assets/teeniepings/hachuping.png", color: "#ff4abd", xp: 100, artW: 69.091, artH: 68.283, eyeL: [36, 48, 20, 18], eyeR: [65, 48, 20, 18], lid: "#f3d3e3" },
-  { id: "yogurping", name: "요거핑", image: "assets/teeniepings/yogurping.png", color: "#d1f100", xp: 100, artW: 65, artH: 81, eyeL: [35, 56, 20, 16], eyeR: [65, 56, 20, 16], lid: "#e9e0a7" },
-  { id: "dalkomping", name: "달콤핑", image: "assets/teeniepings/dalkomping.png", color: "#ff6f65", xp: 100, artW: 58.018, artH: 81.259, eyeL: [37, 48, 20, 15], eyeR: [66, 48, 20, 15], lid: "#f7c7c9" },
-  { id: "baroping", name: "바로핑", image: "assets/teeniepings/baroping.png", color: "#4acfff", xp: 100, artW: 68.59, artH: 88.822, eyeL: [39, 55, 18, 16], eyeR: [65, 55, 18, 16], lid: "#d4ebf2" },
-  { id: "posilping", name: "포실핑", image: "assets/teeniepings/posilping.png", color: "#7effa9", xp: 100, artW: 96.783, artH: 82.511, eyeL: [41, 47, 13, 16], eyeR: [61, 47, 13, 16], lid: "#f1e1d9" },
-  { id: "mallangping", name: "말랑핑", image: "assets/teeniepings/mallangping.png", color: "#e261ff", xp: 100, artW: 91.035, artH: 87.812, eyeL: [42, 52, 14, 15], eyeR: [63, 52, 14, 15], lid: "#efd5e3" },
-  { id: "ajaping", name: "아자핑", image: "assets/teeniepings/ajaping.png", color: "#ffdf57", xp: 100, artW: 67.837, artH: 70.895, eyeL: [39, 47, 18, 16], eyeR: [67, 47, 18, 16], lid: "#ffd93f" },
-  { id: "chachaping", name: "차차핑", image: "assets/teeniepings/chachaping.png", color: "#12ec1d", xp: 100, artW: 80.232, artH: 79.624, eyeL: [44, 54, 20, 19], eyeR: [72, 50, 18, 17], lid: "#e6ed99" },
-  { id: "laraping", name: "라라핑", image: "assets/teeniepings/laraping.png", color: "#c957f5", xp: 100, artW: 66.015, artH: 85.375, eyeL: [32, 59, 19, 17], eyeR: [60, 61, 20, 17], lid: "#e9c5e3" },
-  { id: "haeping", name: "해핑", image: "assets/teeniepings/haeping.png", color: "#ff5574", xp: 100, artW: 66.908, artH: 79.764, eyeL: [37, 55, 21, 17], eyeR: [66, 55, 21, 17], lid: "#efc1d0" },
+  { id: "hachuping", name: "하츄핑", image: "assets/teeniepings/hachuping.png", color: "#ff4abd", xp: 64, artW: 69.091, artH: 68.283, eyeL: [36, 48, 20, 18], eyeR: [65, 48, 20, 18], lid: "#f3d3e3" },
+  { id: "yogurping", name: "요거핑", image: "assets/teeniepings/yogurping.png", color: "#d1f100", xp: 82, artW: 65, artH: 81, eyeL: [35, 56, 20, 16], eyeR: [65, 56, 20, 16], lid: "#e9e0a7" },
+  { id: "dalkomping", name: "달콤핑", image: "assets/teeniepings/dalkomping.png", color: "#ff6f65", xp: 57, artW: 58.018, artH: 81.259, eyeL: [37, 48, 20, 15], eyeR: [66, 48, 20, 15], lid: "#f7c7c9" },
+  { id: "baroping", name: "바로핑", image: "assets/teeniepings/baroping.png", color: "#4acfff", xp: 73, artW: 68.59, artH: 88.822, eyeL: [39, 55, 18, 16], eyeR: [65, 55, 18, 16], lid: "#d4ebf2" },
+  { id: "posilping", name: "포실핑", image: "assets/teeniepings/posilping.png", color: "#7effa9", xp: 69, artW: 96.783, artH: 82.511, eyeL: [41, 47, 13, 16], eyeR: [61, 47, 13, 16], lid: "#f1e1d9" },
+  { id: "mallangping", name: "말랑핑", image: "assets/teeniepings/mallangping.png", color: "#e261ff", xp: 88, artW: 91.035, artH: 87.812, eyeL: [42, 52, 14, 15], eyeR: [63, 52, 14, 15], lid: "#efd5e3" },
+  { id: "ajaping", name: "아자핑", image: "assets/teeniepings/ajaping.png", color: "#ffdf57", xp: 62, artW: 67.837, artH: 70.895, eyeL: [39, 47, 18, 16], eyeR: [67, 47, 18, 16], lid: "#ffd93f" },
+  { id: "chachaping", name: "차차핑", image: "assets/teeniepings/chachaping.png", color: "#12ec1d", xp: 75, artW: 80.232, artH: 79.624, eyeL: [44, 54, 20, 19], eyeR: [72, 50, 18, 17], lid: "#e6ed99" },
+  { id: "laraping", name: "라라핑", image: "assets/teeniepings/laraping.png", color: "#c957f5", xp: 54, artW: 66.015, artH: 85.375, eyeL: [32, 59, 19, 17], eyeR: [60, 61, 20, 17], lid: "#e9c5e3" },
+  { id: "haeping", name: "해핑", image: "assets/teeniepings/haeping.png", color: "#ff5574", xp: 76, artW: 66.908, artH: 79.764, eyeL: [37, 55, 21, 17], eyeR: [66, 55, 21, 17], lid: "#efc1d0" },
 ];
 
 const MAX_DEMO_PINGS = 30;
@@ -66,7 +66,7 @@ const PINGS = Array.from({ length: MAX_DEMO_PINGS }, (_, index) => {
   return {
     ...base,
     id: group === 1 ? base.id : `${base.id}-${group}`,
-    xp: 100,
+    xp: base.xp,
   };
 });
 
@@ -922,10 +922,6 @@ function setOwnedPingCount(value) {
     return;
   }
 
-  const previousCount = ownedPingCount;
-  if (nextCount > previousCount) {
-    PINGS.slice(previousCount, nextCount).forEach((ping) => { ping.xp = soul; });
-  }
   ownedPingCount = nextCount;
   renderPingWorld();
   syncDemoPanel();
@@ -945,7 +941,9 @@ function closeDemoPanel() {
 function resetDemoPanel() {
   ownedPingCount = DEFAULT_OWNED_PING_COUNT;
   showRankSummary = true;
-  PINGS.forEach((ping) => { ping.xp = 100; });
+  PINGS.forEach((ping, index) => {
+    ping.xp = BASE_PINGS[index % BASE_PINGS.length].xp;
+  });
   worldScroll.scrollLeft = (WORLD_WIDTH - worldScroll.clientWidth) / 2;
   worldScroll.scrollTop = (WORLD_HEIGHT - worldScroll.clientHeight) / 2;
   renderPingWorld();
