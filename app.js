@@ -292,10 +292,14 @@ function createCenteredPositions(count) {
 
 function createRandomPositions(count) {
   const worldWidth = pingWorld.clientWidth || WORLD_WIDTH;
-  const minX = 16;
-  const maxX = worldWidth - PING_WIDTH - 16;
-  const minY = WORLD_TOP;
-  const maxY = WORLD_HEIGHT - WORLD_BOTTOM_SAFE - PING_HEIGHT;
+  const viewLeft = worldScroll.scrollLeft;
+  const viewTop = worldScroll.scrollTop;
+  const viewWidth = worldScroll.clientWidth || DESIGN_WIDTH;
+  const viewHeight = worldScroll.clientHeight || DESIGN_HEIGHT;
+  const minX = Math.max(16, viewLeft + 12);
+  const maxX = Math.min(worldWidth - PING_WIDTH - 16, viewLeft + viewWidth - PING_WIDTH - 12);
+  const minY = Math.max(WORLD_TOP, viewTop + WORLD_TOP);
+  const maxY = Math.min(WORLD_HEIGHT - WORLD_BOTTOM_SAFE - PING_HEIGHT, viewTop + viewHeight - WORLD_BOTTOM_SAFE - PING_HEIGHT);
   const positions = [];
 
   for (let index = 0; index < count; index += 1) {
@@ -305,7 +309,7 @@ function createRandomPositions(count) {
       const y = minY + Math.random() * (maxY - minY);
       candidate = [x, y];
       const hasRoom = positions.every(([placedX, placedY]) =>
-        Math.abs(x - placedX) > PING_WIDTH + 12 || Math.abs(y - placedY) > PING_HEIGHT + 12,
+        Math.abs(x - placedX) > PING_WIDTH * 0.74 || Math.abs(y - placedY) > PING_HEIGHT * 0.72,
       );
       if (hasRoom) break;
     }
@@ -1117,8 +1121,8 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-renderPingWorld();
 worldScroll.scrollLeft = (WORLD_WIDTH - worldScroll.clientWidth) / 2;
 worldScroll.scrollTop = (WORLD_HEIGHT - worldScroll.clientHeight) / 2;
+renderPingWorld();
 updateRankSummary();
 resizeScreen();
