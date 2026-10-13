@@ -380,7 +380,6 @@ function renderPingWorld() {
             <span class="blink-eye blink-eye-right" aria-hidden="true"></span>
           </span>
         </span>
-        <span class="ping-xp-pop" aria-hidden="true">+10%</span>
       </span>
     </button>
   `).join("") : `
@@ -607,7 +606,6 @@ function feedPing(id) {
   actor.element.classList.remove("is-fed");
   requestAnimationFrame(() => actor.element.classList.add("is-fed"));
   actor.pulseTimer = setTimeout(() => actor.element.classList.remove("is-fed"), 760);
-  actor.element.querySelector(".ping-xp-pop").textContent = gainedXp > 0 ? `+${Math.round(gainedXp)}%` : "MAX";
 }
 
 function resizeScreen() {

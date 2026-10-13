@@ -339,26 +339,8 @@ button:focus-visible {
   animation: none;
 }
 
-.ping-xp-pop {
-  position: absolute;
-  z-index: 4;
-  top: 7px;
-  left: 50%;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 900;
-  opacity: 0;
-  pointer-events: none;
-  text-shadow: 0 1px 4px #a32460;
-  transform: translate(-50%, 0) scale(0.7);
-}
-
 .teenieping.is-fed .ping-visual {
   animation: ping-touch 520ms cubic-bezier(0.2, 0.9, 0.25, 1);
-}
-
-.teenieping.is-fed .ping-xp-pop {
-  animation: xp-pop 720ms ease-out;
 }
 
 @keyframes ping-bob {
@@ -398,12 +380,6 @@ button:focus-visible {
   100% { transform: scale(1); }
 }
 
-@keyframes xp-pop {
-  0% { opacity: 0; transform: translate(-50%, 5px) scale(0.7); }
-  24% { opacity: 1; }
-  100% { opacity: 0; transform: translate(-50%, -28px) scale(1.12); }
-}
-
 @keyframes coachmark-in {
   from { opacity: 0; transform: translate(-50%, -5px) scale(0.96); }
   to { opacity: 1; transform: translate(-50%, 0) scale(1); }
@@ -417,8 +393,7 @@ button:focus-visible {
   }
 
   .teenieping,
-  .ping-visual,
-  .ping-xp-pop {
+  .ping-visual {
     transition: none;
   }
 
