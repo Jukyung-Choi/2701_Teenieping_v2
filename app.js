@@ -38,7 +38,7 @@ const WORLD_BOTTOM_SAFE = 150;
 const ROW_GAP = 220;
 const XP_DECAY_PER_SECOND = 0.5;
 const XP_PAINT_INTERVAL = 250;
-const CRUISE_MAX_SPEED = 0.0415;
+const CRUISE_MAX_SPEED = 0.045;
 const COLLISION_MAX_SPEED = 0.06;
 const PLAYER_RANKING_SCORE = 2184600;
 const PLAYER_RANK = 518;
@@ -58,7 +58,7 @@ const BASE_PINGS = [
 ];
 
 const MAX_DEMO_PINGS = 30;
-const DEFAULT_OWNED_PING_COUNT = 5;
+const DEFAULT_OWNED_PING_COUNT = 10;
 const PINGS = Array.from({ length: MAX_DEMO_PINGS }, (_, index) => {
   const base = BASE_PINGS[index % BASE_PINGS.length];
   const group = Math.floor(index / BASE_PINGS.length) + 1;
