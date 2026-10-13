@@ -224,7 +224,6 @@ function updateRankSummary() {
 function updatePingElement(actor) {
   const roundedXp = Math.round(actor.data.xp);
   actor.element.style.setProperty("--xp", `${actor.data.xp.toFixed(2)}%`);
-  actor.element.classList.toggle("is-full", actor.data.xp >= 99.5);
   actor.element.classList.toggle("is-low-xp", actor.data.xp <= 30);
   actor.element.setAttribute("aria-label", `${actor.data.name} XP ${roundedXp}%. 터치해서 100%로 회복하기`);
 }
@@ -412,7 +411,6 @@ function renderPingWorld() {
       bounceAmplitude: 5 + (index % 3) * 1.2,
       collisionBoost: 0,
       pulseTimer: 0,
-      chargeWaveTimer: 0,
     };
     chooseWanderTarget(actor);
     return actor;
@@ -608,7 +606,6 @@ function feedPing(id) {
   actor.element.classList.remove("is-fed");
   requestAnimationFrame(() => actor.element.classList.add("is-fed"));
   actor.pulseTimer = setTimeout(() => actor.element.classList.remove("is-fed"), 760);
-  if (before < 100) playPingChargeWave(actor);
 }
 
 function resizeScreen() {
@@ -912,11 +909,9 @@ function syncDemoPanel() {
 
 function setAllPingXp(value) {
   const nextXp = clampDemoValue(value, 0, 100);
-  const newlyFullActors = nextXp === 100 ? pingActors.filter((actor) => actor.data.xp < 100) : [];
   PINGS.forEach((ping) => { ping.xp = nextXp; });
   pingActors.forEach(updatePingElement);
   updateSoulFromPings();
-  newlyFullActors.forEach(playPingChargeWave);
   syncDemoPanel();
 }
 
@@ -974,21 +969,6 @@ function bridgeAction(type) {
   }
 }
 
-function playPingChargeWave(actor) {
-  clearTimeout(actor.chargeWaveTimer);
-  actor.element.classList.remove("is-charge-wave");
-  requestAnimationFrame(() => {
-    actor.element.classList.add("is-charge-wave");
-  });
-  actor.chargeWaveTimer = setTimeout(() => {
-    actor.element.classList.remove("is-charge-wave");
-  }, 500);
-}
-
-function playChargeWave() {
-  pingActors.forEach(playPingChargeWave);
-}
-
 function chargeAll() {
   if (!freeChargeAvailable) {
     if (gems < 1) {
@@ -1004,7 +984,6 @@ function chargeAll() {
   freeChargeAvailable = false;
   nextFreeChargeAt = Date.now() + 6 * 60 * 60 * 1000;
   closeSheet();
-  playChargeWave();
   showToast("모든 티니핑의 Care XP가 100%로 충전됐어요!");
 }
 

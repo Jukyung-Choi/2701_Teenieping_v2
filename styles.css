@@ -215,31 +215,6 @@ button:focus-visible {
   transform-origin: 50% 72%;
 }
 
-.ping-visual::after {
-  position: absolute;
-  z-index: 5;
-  top: 24px;
-  left: 50%;
-  display: grid;
-  width: 110px;
-  height: 110px;
-  place-items: center;
-  border-radius: 50%;
-  color: transparent;
-  opacity: 0;
-  font-size: 7px;
-  font-weight: 900;
-  line-height: 1;
-  text-shadow:
-    -40px -20px 0.8px #fff,
-    39px -25px 0.8px #fff8b8,
-    43px 35px 0.8px #fff,
-    -39px 40px 0.8px #fff8b8;
-  content: "★";
-  pointer-events: none;
-  transform: translateX(-50%) scale(0.62) rotate(-8deg);
-}
-
 .ping-info {
   position: relative;
   z-index: 2;
@@ -304,26 +279,6 @@ button:focus-visible {
 
 .teenieping.is-low-xp .ping-art-wrap {
   animation: none;
-}
-
-.ping-bob-layer::after {
-  position: absolute;
-  z-index: 3;
-  inset: 0;
-  opacity: 0;
-  background: linear-gradient(110deg, transparent 32%, rgba(255, 255, 255, 0.92) 49%, transparent 66%);
-  background-position: 100% 0;
-  background-size: 300% 100%;
-  content: "";
-  pointer-events: none;
-  -webkit-mask-image: var(--ping-image);
-  -webkit-mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: contain;
-  mask-image: var(--ping-image);
-  mask-position: center;
-  mask-repeat: no-repeat;
-  mask-size: contain;
 }
 
 .ping-bob-layer {
@@ -406,22 +361,6 @@ button:focus-visible {
   animation: xp-pop 720ms ease-out;
 }
 
-.teenieping.is-charge-wave .ping-bob-layer::after {
-  animation: charge-sweep 420ms ease-out both;
-}
-
-.teenieping.is-charge-wave .ping-visual::after {
-  animation: charge-sparkle 360ms cubic-bezier(0.2, 0.85, 0.3, 1) both;
-}
-
-.teenieping.is-charge-wave .ping-visual {
-  animation: charge-pop 280ms cubic-bezier(0.2, 0.86, 0.3, 1) both;
-}
-
-.teenieping.is-full .ping-xp-track {
-  box-shadow: 0 0 7px var(--ping-color);
-}
-
 @keyframes ping-bob {
   from { transform: translate(-50%, calc(-50% + var(--bob-distance))); }
   to { transform: translate(-50%, calc(-50% - var(--bob-distance))); }
@@ -465,27 +404,6 @@ button:focus-visible {
   100% { opacity: 0; transform: translate(-50%, -28px) scale(1.12); }
 }
 
-@keyframes charge-sweep {
-  0% { opacity: 0; background-position: 100% 0; }
-  22% { opacity: 0.55; }
-  70% { opacity: 0.35; }
-  100% { opacity: 0; background-position: 0 0; }
-}
-
-@keyframes charge-sparkle {
-  0% { opacity: 0; transform: translateX(-50%) scale(0.62) rotate(-8deg); }
-  35% { opacity: 1; }
-  68% { opacity: 0.9; transform: translateX(-50%) scale(1.08) rotate(5deg); }
-  100% { opacity: 0; transform: translateX(-50%) scale(1.18) rotate(8deg); }
-}
-
-@keyframes charge-pop {
-  0%, 100% { transform: scale(1); }
-  24% { transform: scale(1.12, 1.1); }
-  43% { transform: scale(0.95, 0.97); }
-  68% { transform: scale(1.035, 1.025); }
-}
-
 @keyframes coachmark-in {
   from { opacity: 0; transform: translate(-50%, -5px) scale(0.96); }
   to { opacity: 1; transform: translate(-50%, 0) scale(1); }
@@ -504,9 +422,6 @@ button:focus-visible {
     transition: none;
   }
 
-  .teenieping.is-charge-wave .ping-visual {
-    animation: none;
-  }
 }
 
 .soul-card {
