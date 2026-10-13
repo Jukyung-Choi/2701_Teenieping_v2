@@ -410,6 +410,7 @@ function renderPingWorld() {
       bounceAmplitude: 5 + (index % 3) * 1.2,
       collisionBoost: 0,
       pulseTimer: 0,
+      chargeWaveTimer: 0,
     };
     chooseWanderTarget(actor);
     return actor;
@@ -967,6 +968,17 @@ function bridgeAction(type) {
   }
 }
 
+function playChargeWave() {
+  pingActors.forEach((actor) => {
+    clearTimeout(actor.chargeWaveTimer);
+    actor.element.classList.remove("is-charge-wave");
+    requestAnimationFrame(() => actor.element.classList.add("is-charge-wave"));
+    actor.chargeWaveTimer = setTimeout(() => {
+      actor.element.classList.remove("is-charge-wave");
+    }, 500);
+  });
+}
+
 function chargeAll() {
   if (!freeChargeAvailable) {
     if (gems < 1) {
@@ -982,6 +994,7 @@ function chargeAll() {
   freeChargeAvailable = false;
   nextFreeChargeAt = Date.now() + 6 * 60 * 60 * 1000;
   closeSheet();
+  playChargeWave();
   showToast("모든 티니핑의 Care XP가 100%로 충전됐어요!");
 }
 
