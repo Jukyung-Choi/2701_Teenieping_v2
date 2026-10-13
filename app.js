@@ -305,10 +305,11 @@ function createRandomPositions(count) {
   const viewTop = worldScroll.scrollTop;
   const viewWidth = worldScroll.clientWidth || DESIGN_WIDTH;
   const viewHeight = worldScroll.clientHeight || DESIGN_HEIGHT;
-  const minX = Math.max(16, viewLeft + 12);
-  const maxX = Math.min(worldWidth - PING_WIDTH - 16, viewLeft + viewWidth - PING_WIDTH - 12);
-  const minY = Math.max(WORLD_TOP, viewTop + WORLD_TOP);
-  const maxY = Math.min(WORLD_HEIGHT - WORLD_BOTTOM_SAFE - PING_HEIGHT, viewTop + viewHeight - WORLD_BOTTOM_SAFE - PING_HEIGHT);
+  const minX = Math.max(16, viewLeft + 16);
+  const maxX = Math.min(worldWidth - PING_WIDTH - 16, viewLeft + viewWidth - PING_WIDTH - 16);
+  const minY = Math.max(WORLD_TOP, viewTop + 18);
+  const maxY = Math.min(WORLD_HEIGHT - PING_HEIGHT - 18, viewTop + viewHeight - PING_HEIGHT - 18);
+  const minimumSpacing = count <= 10 ? 118 : Math.max(74, 118 - (count - 10) * 2.2);
   const positions = [];
 
   for (let index = 0; index < count; index += 1) {
@@ -318,7 +319,7 @@ function createRandomPositions(count) {
       const y = minY + Math.random() * (maxY - minY);
       candidate = [x, y];
       const hasRoom = positions.every(([placedX, placedY]) =>
-        Math.abs(x - placedX) > PING_WIDTH * 0.74 || Math.abs(y - placedY) > PING_HEIGHT * 0.72,
+        Math.hypot(x - placedX, y - placedY) >= minimumSpacing,
       );
       if (hasRoom) break;
     }
