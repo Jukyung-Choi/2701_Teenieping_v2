@@ -292,9 +292,9 @@ button:focus-visible {
 
 .ping-art-wrap {
   position: relative;
-  width: 94px;
-  height: 94px;
-  overflow: hidden;
+  width: 104px;
+  height: 100px;
+  overflow: visible;
   flex: none;
   pointer-events: none;
   transform-origin: 50% 56%;
