@@ -122,6 +122,18 @@ worldScroll.addEventListener("pointercancel", finishWorldPan);
 worldScroll.addEventListener("wheel", (event) => event.preventDefault(), { passive: false });
 
 document.addEventListener("click", (event) => {
+  const backgroundTarget = event.target.closest("[data-background]");
+  if (backgroundTarget) {
+    applyBackground(backgroundTarget.dataset.background);
+    try { localStorage.setItem("teenieping-background", selectedBackground); } catch { /* Session only. */ }
+    sheetContent.querySelectorAll("[data-background]").forEach((button) => {
+      const selected = button.dataset.background === selectedBackground;
+      button.classList.toggle("is-selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    showToast("배경을 바꿨어요");
+    return;
+  }
   if (!suppressPingClick || !event.target.closest("[data-ping]")) return;
   suppressPingClick = false;
   event.preventDefault();
@@ -823,6 +835,57 @@ function renderCharge() {
   `;
 }
 
+// The host app handles the photo-booth destination in its existing WebView.
+const BACKGROUNDS = [
+  { id: "pink", name: "핑크빛 세상", image: "linear-gradient(180deg, #ffa6a6, #ff94df)" },
+  { id: "lavender", name: "별빛 라벤더", image: 'url("assets/background-lavender.svg")' },
+  { id: "mint", name: "구름 민트", image: 'url("assets/background-mint.svg")' },
+];
+let selectedBackground = "pink";
+try {
+  const saved = localStorage.getItem("teenieping-background");
+  if (BACKGROUNDS.some((item) => item.id === saved)) selectedBackground = saved;
+} catch { /* Preferences remain available when storage is restricted. */ }
+function applyBackground(id) {
+  const background = BACKGROUNDS.find((item) => item.id === id);
+  if (!background) return;
+  selectedBackground = id;
+  gameScreen.style.setProperty("--world-background", background.image);
+}
+applyBackground(selectedBackground);
+const backgroundMusic = document.querySelector("#backgroundMusic");
+let musicEnabled = true;
+try { musicEnabled = localStorage.getItem("teenieping-music") !== "off"; } catch { /* Session only. */ }
+function applyMusicPreference(notifyHost = false) {
+  backgroundMusic.muted = !musicEnabled;
+  if (!musicEnabled || document.hidden) backgroundMusic.pause();
+  else if (backgroundMusic.getAttribute("src") || backgroundMusic.querySelector("source[src]")) {
+    // Browsers may require a user gesture before audio playback.
+    backgroundMusic.play().catch(() => {});
+  }
+  if (notifyHost) {
+    const payload = JSON.stringify({ type: "teenieping-action", action: "bgm", enabled: musicEnabled });
+    if (window.webkit?.messageHandlers?.teenieping) window.webkit.messageHandlers.teenieping.postMessage(payload);
+    else if (window.Android?.postMessage) window.Android.postMessage(payload);
+  }
+}
+applyMusicPreference(true);
+document.addEventListener("pointerdown", () => applyMusicPreference(), { once: true });
+document.addEventListener("visibilitychange", () => applyMusicPreference());
+
+function renderMore() {
+  return `<p class="secondary-intro">티니핑 세상을 더 즐겨보세요</p>
+    <div class="secondary-menu">
+      <button type="button" class="secondary-row" data-action="background"><span class="secondary-icon" aria-hidden="true">🖼️</span><span><strong>배경 바꾸기</strong><small>내가 좋아하는 분위기로 꾸며요</small></span><span class="secondary-arrow" aria-hidden="true">›</span></button>
+      <button type="button" class="secondary-row" data-action="booth"><span class="secondary-icon booth-icon" aria-hidden="true">📷</span><span><strong>포토부스</strong><small>사진 찍으러 가요 · 앱 안에서 이동</small></span><span class="secondary-arrow" aria-hidden="true">›</span></button>
+      <button type="button" class="secondary-row music-row" role="switch" aria-checked="${musicEnabled}" aria-label="배경음악" data-action="toggle-music"><span class="secondary-icon music-icon" aria-hidden="true">♫</span><span><strong>배경음악</strong><small class="music-state">${musicEnabled ? "켜짐" : "꺼짐"}</small></span><span class="music-switch" aria-hidden="true"><span></span></span></button>
+      <button type="button" class="secondary-row help-row" data-action="help"><span class="secondary-icon" aria-hidden="true">?</span><span><strong>참여 방법</strong><small>티니핑 세상이 처음이라면</small></span><span class="secondary-arrow" aria-hidden="true">›</span></button>
+    </div>`;
+}
+function renderBackgrounds() {
+  return `<button type="button" class="secondary-back" data-action="more">‹ 더보기</button><p class="secondary-intro">마음에 드는 배경을 선택해 주세요</p><div class="background-options">${BACKGROUNDS.map((item) => `<button type="button" class="background-option ${selectedBackground === item.id ? "is-selected" : ""}" data-background="${item.id}" aria-pressed="${selectedBackground === item.id}"><span class="background-preview" style='background-image: ${item.image}'><span class="background-check" aria-hidden="true">✓</span></span><strong>${item.name}</strong></button>`).join("")}</div><p class="background-note">선택하면 바로 적용돼요</p>`;
+}
+
 function openSheet(type) {
   if (type === "draw") {
     bridgeAction("draw");
@@ -830,6 +893,8 @@ function openSheet(type) {
   }
 
   const meta = {
+    more: ["✨", "더보기"],
+    background: ["🖼️", "배경 바꾸기"],
     soul: ["💖", "소울게이지 단계별 보상"],
     help: ["📖", "참여방법"],
     ranking: ["🏆", "티니핑 세상 랭킹"],
@@ -847,11 +912,15 @@ function openSheet(type) {
   if (type === "ranking") activeRankingTab = "ranking";
   sheetEmoji.textContent = meta[0];
   sheetTitle.textContent = meta[1];
-  bottomSheet.classList.toggle("is-rich", type !== "charge");
+  bottomSheet.classList.toggle("is-rich", !["charge", "more", "background"].includes(type));
+  bottomSheet.classList.toggle("is-secondary", ["more", "background"].includes(type));
+  document.querySelector(".more-control").setAttribute("aria-expanded", String(["more", "background"].includes(type)));
   sheetContent.classList.toggle("is-ranking-content", type === "ranking");
   sheetContent.classList.toggle("is-soul-content", type === "soul");
   sheetPrimary.hidden = type !== "charge";
 
+  if (type === "more") sheetContent.innerHTML = renderMore();
+  if (type === "background") sheetContent.innerHTML = renderBackgrounds();
   if (type === "soul") sheetContent.innerHTML = renderSoulRewards();
   if (type === "help") sheetContent.innerHTML = renderHelp();
   if (type === "ranking") sheetContent.innerHTML = renderRanking();
@@ -879,8 +948,11 @@ function rerenderActiveSheet() {
 }
 
 function closeSheet() {
+  const wasSecondary = ["more", "background"].includes(activeSheet);
   sheetLayer.hidden = true;
   activeSheet = null;
+  document.querySelector(".more-control").setAttribute("aria-expanded", "false");
+  if (wasSecondary) document.querySelector(".more-control").focus();
 }
 
 function clampDemoValue(value, min, max) {
@@ -1087,11 +1159,26 @@ document.addEventListener("click", (event) => {
   const actionTarget = event.target.closest("[data-action]");
   if (!actionTarget) return;
   const action = actionTarget.dataset.action;
-  if (action === "close-sheet") closeSheet();
+  if (action === "toggle-music") {
+    musicEnabled = !musicEnabled;
+    try { localStorage.setItem("teenieping-music", musicEnabled ? "on" : "off"); } catch { /* Session only. */ }
+    applyMusicPreference(true);
+    actionTarget.setAttribute("aria-checked", String(musicEnabled));
+    actionTarget.querySelector(".music-state").textContent = musicEnabled ? "켜짐" : "꺼짐";
+  }
+  else if (action === "close-sheet") closeSheet();
   else if (action === "open-demo") openDemoPanel();
   else if (action === "close-demo") closeDemoPanel();
   else if (action === "reset-demo") resetDemoPanel();
   else if (action === "back") goBack();
+  else if (action === "booth") {
+    if (window.webkit?.messageHandlers?.teenieping || window.Android?.postMessage) {
+      closeSheet();
+      bridgeAction("booth");
+    } else {
+      showToast("포토부스는 앱 연결 후 이용할 수 있어요");
+    }
+  }
   else openSheet(action);
 });
 
@@ -1109,6 +1196,12 @@ demoRankVisibility.addEventListener("change", () => {
   syncDemoPanel();
 });
 document.addEventListener("keydown", (event) => {
+  if (event.key === "Tab" && !sheetLayer.hidden && demoLayer.hidden) {
+    const targets = [...bottomSheet.querySelectorAll('button:not([hidden]):not([disabled]), [href], input:not([disabled])')];
+    const first = targets[0], last = targets[targets.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+  }
   if (event.key !== "Escape") return;
   if (!demoLayer.hidden) closeDemoPanel();
   else if (!sheetLayer.hidden) closeSheet();
